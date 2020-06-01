@@ -4,33 +4,48 @@ let bonjour = require('bonjour')()
 
 let io = require('socket.io')(3000)
 
-const users = {}
-const servicesLocal = {}
-const servicesDeLocal ={}
+const users = {},
+servicesLocal = {},
+servicesDeLocal ={}
 let nomServeur="Base"
 
-servicesLocal[nomServeur]=bonjour.publish({ name: nomServeur, type: 'http', port: 3000 })
-bonjour.find({type: 'http'}, function (service) {
+servicesLocal[nomServeur]=bonjour.publish({ name: nomServeur, type: 'user', port: 3000 })
+
+var browser = bonjour.find({type: 'user'})
+
+browser.on('up', (service)=>{
     console.log("Boot WO log")
-    console.log('Found an HTTP server:', service.referer.address)
+    console.log('Found an HTTP server:', service)
     //servicesLocal[service.name]=service
-    if (service.name==nomServeur)servicesLocal[nomServeur].referer=service.referer
-    console.log("service name : "+service.name)
+    if (service.name==nomServeur){
+        servicesLocal[nomServeur].referer=service.referer
+        console.log("service name : "+service.name)
+    }
     if (servicesLocal[service.name]== undefined){
         console.log("Delocal")
         servicesDeLocal[service.name]=service
         io.sockets.emit('service-connected', { service :servicesDeLocal[service.name], type : "Delocal"})
     }
-else{
+    else{
         io.sockets.emit('service-connected', { service : servicesLocal[service.name], type : "Local"})
     }
 
-/*
-    for (var att in service){
-        console.log("Foo has property " + att);
-    }
-*/
+
+
+
+    /*
+        for (var att in service){
+            console.log("Foo has property " + att);
+        }
+    */
 })
+
+browser.on('down', (service)=>{
+    console.log("dwwwn", service)
+})
+
+
+
 
 console.log("boot")
 
@@ -40,10 +55,11 @@ console.log("boot")
 io.on('connection', socket => {
     console.log("log")
     socket.on('new-user', name => {
+        console.log("brows", browser)
         users[socket.id] = name
         socket.broadcast.emit('user-connected', name)
 
-        let service =bonjour.publish({ name: name, type: 'http', port: 3000 })
+        let service =bonjour.publish({ name: name, type: 'user', port: 3000 })
 
         socket.emit('servicesMulti-connected', { services : servicesLocal, type : "Local"})
         servicesLocal[service.name]=service
