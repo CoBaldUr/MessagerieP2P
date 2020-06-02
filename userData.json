@@ -7,10 +7,10 @@
 
 
   },
-  "usersMet" : [{"name" : "linux", "id": 123 },
-    {"name" : "truc", "id": 321 },
-    {"name" : "test", "id": 121 },
-    {"name" : "oui", "id": 111 }]
+  "usersMet" : {"linux": {"id" :123} ,
+    "truc": {"id" :321 },
+    "test": {"id" :121 },
+    "oui": {"id" :111 }}
 
 
 }

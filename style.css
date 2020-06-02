@@ -9,7 +9,7 @@ body {
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #1115;
+    background-color: #111;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -21,10 +21,11 @@ body {
     color: #818181;
     display: block;
     text-align:right;
+    cursor: pointer;
 }
 
 .sidenav a:hover {
-    color: #f1f1f1;
+    color: black;
 }
 
 .sidenav div {
@@ -33,8 +34,8 @@ body {
     padding: 10px 8px 8px 10px;
     text-decoration: none;
     font-size: 25px;
-    color: #f1f1f1;
-    background-color: grey;
+    color: grey;
+    background-color: white;
     border-radius: 3px;
     display: block;
 }
@@ -49,10 +50,18 @@ body {
 }
 
 
-
+.dot {
+    margin-left: 5px;
+    height: 15px;
+    width: 15px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
 
 
 .main {
+
     margin-left: 160px; /* Same as the width of the sidenav */
     font-size: 28px; /* Increased text to enable scrolling */
     padding: 0px 10px;

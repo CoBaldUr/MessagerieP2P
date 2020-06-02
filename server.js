@@ -22,8 +22,9 @@ function readFile(nameFile) {
     return JSON.parse(data);
 
 }
-
-
+loadConv()
+loadUser()
+console.log(users)
 
 var browserUser = bonjour.find({type: 'user'})
 
@@ -31,13 +32,17 @@ browserUser.on('up', (service)=>{
 
     console.log('Found an HTTP server:', service)
     servicesUser[service.name]=service
+    console.log(service.name, users[service.name])
+
+    if (users[service.name]!= undefined)
+    users[service.name].connected=true
 
 })
 
 browserUser.on('down', (service)=>{
     console.log("dwwwn", service)
     delete servicesUser[service.name]
-
+    users[service.name].connected=false
 
 })
 
@@ -56,22 +61,19 @@ browserConv.on('up', (service)=>{
 
     console.log('Found an HTTP server:', service)
     servicesConv[service.name]=service
+    convUsed[service.name].connected=true
 
 })
+
 
 browserConv.on('down', (service)=>{
     console.log("dwwwn", service)
     delete servicesConv[service.name]
-
+    convUsed[service.name].connected=false
 
 })
 
 
-for( let id in convUsed){
-
-
-
-}
 
 
 
@@ -79,8 +81,33 @@ for( let id in convUsed){
 console.log("boot")
 
 
+function loadConv(){
+    for (var id in convUsed){
+        console.log("load", id+" "+convUsed[id])
+        if (servicesConv[id]==undefined){
+            convUsed[id].connected = false
+        }
+    else{
+            convUsed[id].connected = true
+        }
+    }
+
+        }
 
 
+
+function loadUser(){
+    for (var id in users){
+        console.log("load User", id+" "+users[id])
+        if (servicesUser[id]==undefined){
+            users[id].connected = false
+        }
+        else{
+            users[id].connected = true
+        }
+    }
+
+}
 
 
 
@@ -89,6 +116,9 @@ console.log("boot")
 // Gestion des échanges
 
 io.on('connection', socket => {
+
+
+
     socket.on('ask-name', ()=>{
 
         socket.emit('user-name', userName)
@@ -109,28 +139,3 @@ io.on('connection', socket => {
 
 
 
-///  test publication du html
-var express = require('express');
-var app = express();
-var path = require("path");
-
-app.set('view engine', 'ejs')
-
-
-app.use( express.static( __dirname + '/views/client/' ))
-app.get( '/', function( req, res ) {
-    console.log("GET")
-    let ipLocal = servicesLocal[nomServeur].referer.address+":"+servicesLocal[nomServeur].port
-    console.log(ipLocal)
-        //res.sendFile( path.join( __dirname, 'client', 'index.html' ));
-    res.render('client/conv', {ipLocal : ipLocal})
-
-
-});
-
-
-app.get('/views/client/script.js', function(req, res) {
-    res.sendFile(path.join(__dirname + '/views/client/script.js'));
-});
-
-app.listen(8080)
