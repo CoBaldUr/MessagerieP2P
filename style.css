@@ -9,7 +9,7 @@ body {
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: #1115;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -20,6 +20,7 @@ body {
     font-size: 25px;
     color: #818181;
     display: block;
+    text-align:right;
 }
 
 .sidenav a:hover {
@@ -27,7 +28,8 @@ body {
 }
 
 .sidenav div {
-    margin: 20px 3px 3px 0px;
+
+    margin: 40px 3px 3px 0px;
     padding: 10px 8px 8px 10px;
     text-decoration: none;
     font-size: 25px;
@@ -37,6 +39,14 @@ body {
     display: block;
 }
 
+.sidenav .closebtn {
+    color: #818181;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 36px;
+    margin-left: 50px;
+}
 
 
 
@@ -60,3 +70,4 @@ body {
     width: 50%;
 
 }
+

@@ -3,18 +3,25 @@ let bonjour = require('bonjour')()
 
 
 let io = require('socket.io')(3000)
+let userData =readFile('userData')
+
     // utilisateurs connus
-const users = {},
+const users = userData.usersMet,
     // conversations utilisées
-    convUsed ={},
+    convUsed =userData.conv,
     // services des utilisateurs sur le réseau
     servicesUser ={},
     // services des conversations sur le réseau
     servicesConv ={}
 
-let userName="Base"
+let userName=userData.userName
 
+function readFile(nameFile) {
+    var fs=require('fs');
+    var data=fs.readFileSync(nameFile+'.json', 'utf8');
+    return JSON.parse(data);
 
+}
 
 
 
@@ -79,17 +86,7 @@ console.log("boot")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+// Gestion des échanges
 
 io.on('connection', socket => {
     socket.on('ask-name', ()=>{
@@ -97,6 +94,12 @@ io.on('connection', socket => {
         socket.emit('user-name', userName)
     })
 
+    socket.on('ask-users', ()=>{
+        socket.emit('users', users)
+    })
+    socket.on('ask-convs', ()=>{
+        socket.emit('convs', convUsed)
+    })
 
 })
 
