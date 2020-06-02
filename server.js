@@ -3,46 +3,68 @@ let bonjour = require('bonjour')()
 
 
 let io = require('socket.io')(3000)
-
+    // utilisateurs connus
 const users = {},
-servicesLocal = {},
-servicesDeLocal ={}
-let nomServeur="Base"
+    // conversations utilisées
+    convUsed ={},
+    // services des utilisateurs sur le réseau
+    servicesUser ={},
+    // services des conversations sur le réseau
+    servicesConv ={}
 
-servicesLocal[nomServeur]=bonjour.publish({ name: nomServeur, type: 'user', port: 3000 })
+let userName="Base"
 
-var browser = bonjour.find({type: 'user'})
 
-browser.on('up', (service)=>{
-    console.log("Boot WO log")
+
+
+
+var browserUser = bonjour.find({type: 'user'})
+
+browserUser.on('up', (service)=>{
+
     console.log('Found an HTTP server:', service)
-    //servicesLocal[service.name]=service
-    if (service.name==nomServeur){
-        servicesLocal[nomServeur].referer=service.referer
-        console.log("service name : "+service.name)
-    }
-    if (servicesLocal[service.name]== undefined){
-        console.log("Delocal")
-        servicesDeLocal[service.name]=service
-        io.sockets.emit('service-connected', { service :servicesDeLocal[service.name], type : "Delocal"})
-    }
-    else{
-        io.sockets.emit('service-connected', { service : servicesLocal[service.name], type : "Local"})
-    }
+    servicesUser[service.name]=service
 
-
-
-
-    /*
-        for (var att in service){
-            console.log("Foo has property " + att);
-        }
-    */
 })
 
-browser.on('down', (service)=>{
+browserUser.on('down', (service)=>{
     console.log("dwwwn", service)
+    delete servicesUser[service.name]
+
+
 })
+
+console.log("serv ",servicesUser[userName])
+// Eviter doublons
+if (servicesUser[userName]==undefined){
+
+        let userLocal = bonjour.publish({ name: userName, type: 'user', port: 3000 }).on('error', (error)=>{
+            console.log("erreur on", error)
+        })
+}
+
+var browserConv = bonjour.find({type: 'conv'})
+
+browserConv.on('up', (service)=>{
+
+    console.log('Found an HTTP server:', service)
+    servicesConv[service.name]=service
+
+})
+
+browserConv.on('down', (service)=>{
+    console.log("dwwwn", service)
+    delete servicesConv[service.name]
+
+
+})
+
+
+for( let id in convUsed){
+
+
+
+}
 
 
 
@@ -52,43 +74,27 @@ console.log("boot")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 io.on('connection', socket => {
-    console.log("log")
-    socket.on('new-user', name => {
-        console.log("brows", browser)
-        users[socket.id] = name
-        socket.broadcast.emit('user-connected', name)
+    socket.on('ask-name', ()=>{
 
-        let service =bonjour.publish({ name: name, type: 'user', port: 3000 })
-
-        socket.emit('servicesMulti-connected', { services : servicesLocal, type : "Local"})
-        servicesLocal[service.name]=service
-
-        //console.log("publish", servicesLocal)
-
-        socket.emit('servicesMulti-connected', { services : servicesDeLocal, type : "DeLocal"})
-    })
-
-
-    socket.on('send-chat-message', message => {
-        socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
-    })
-
-
-    socket.on('disconnect', () => {
-        let name = users[socket.id]
-        if (name != null) {
-
-        socket.broadcast.emit('user-disconnected', name)
-
-        delete users[socket.id]
-        let service = servicesLocal[name]
-        console.log(name, service)
-        var stop = service.stop
-        stop()
-        delete servicesLocal[name]
-        //socket.broadcast.emit('service-disconnected', users[socket.id])
-    }
+        socket.emit('user-name', userName)
     })
 
 
