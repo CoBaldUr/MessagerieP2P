@@ -190,17 +190,27 @@ io.on('connection', socket => {
             let userIdConv = urlParams.get("user")
             // on choisit qui héberge la conversation
             // idLocal + idContact => si pair, serveur local heberge
-            let number = (parseInt(userIdConv)+parseInt(userId))%2
-            if (number==0){
+            let ipLocal =userLocal.referer.address+":"+userLocal.port
+           if (servicesUser[userIdConv]==undefined){
+               socket.emit("IPConv", ipLocal)
+           }
+            else{let number = (parseInt(userIdConv)+parseInt(userId))%2
+           if (number==0){
                 console.log( "ouiuiuiui" ,userLocal)
-                let ipLocal =userLocal.referer.address+":"+userLocal.port
+
                 socket.emit("IPConv", ipLocal)
             }
-            else{
-            let service =servicesUser[userIdConv]
-                let ip =service.referer.address+":"+service.port
-            socket.emit("IPConv", ip)
-            }
+            else {
+               let service = servicesUser[userIdConv]
+               let ip = service.referer.address + ":" + service.port
+               socket.emit("IPConv", ip)
+           } }
+        }
+        else if(urlParams.has("conv")){
+            let idConv = urlParams.get("conv")
+            let service = servicesConv[idConv]
+            let ipConv =service.referer.address+":"+service.port
+            socket.emit("IPConv", ipConv)
         }
 
 
