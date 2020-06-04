@@ -1,16 +1,39 @@
 {
-  "userName" : "Base",
-  "test" : 123,
-  "conv" : { "test1" : [ "linux", "truc" ],
-    "test2" : ["linux"]
-
-
-
+  "userName": "Base",
+  "id": 1591255532896,
+  "conv": {
+    "001": {
+      "name": "test1",
+      "userList": [
+        "linux",
+        "truc"
+      ],
+      "connected": true
+    },
+    "002": {
+      "name": "test2",
+      "userList": [
+        "linux"
+      ],
+      "connected": true
+    }
   },
-  "usersMet" : {"linux": {"id" :123} ,
-    "truc": {"id" :321 },
-    "test": {"id" :121 },
-    "oui": {"id" :111 }}
-
-
+  "usersMet": {
+    "111": {
+      "name": "oui",
+      "connected": false
+    },
+    "123": {
+      "name": "Linux",
+      "connected": false
+    },
+    "321": {
+      "name": "truc",
+      "connected": false
+    },
+    "852": {
+      "name": "test",
+      "connected": false
+    }
+  }
 }

@@ -10,7 +10,7 @@
 <body>
 <div class="sidenav" id="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div id="accueil" style="cursor:pointer" onclick="location.href='index.html?'">Accueil</div>
+    <div id="accueil" style="cursor:pointer" onclick="location.href='index.html'">Accueil</div>
 </div>
 <span style="font-size:30px; cursor:pointer" onclick="openNav()"  id ="openbtn">&#9776;</span>
 
@@ -19,8 +19,14 @@
 
 <div class="main">
     <script defer src="scriptConv.js"></script>
-    <h1>Conversation avec </h1>
-    <p>test </p>
+
+    <div id="message-container"></div>
+    <form id="log-container">
+
+    </form>
+    <form id="send-container">
+
+    </form>
 
 </div>
 
