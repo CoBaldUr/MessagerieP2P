@@ -1,6 +1,6 @@
 {
-  "userName": "",
-  "id": 0,
+  "userName": "Base",
+  "id": 1591951745835,
   "conv": {
     "001": {
       "name": "test1",
@@ -8,14 +8,14 @@
         "linux",
         "truc"
       ],
-      "connected": true
+      "connected": false
     },
     "002": {
       "name": "test2",
       "userList": [
         "linux"
       ],
-      "connected": true
+      "connected": false
     }
   },
   "usersMet": {
@@ -34,6 +34,17 @@
     "852": {
       "name": "test",
       "connected": false
+    },
+    "1591887263883": {
+      "name": "Linuux",
+      "connected": false
+    },
+    "1591794488745": {
+      "name": "Base",
+      "connected": true
+    },
+    "1591952150893": {
+      "name": "linux"
     }
   }
 }

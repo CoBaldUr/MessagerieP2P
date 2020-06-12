@@ -102,25 +102,26 @@ sideBar.append(divConv)
 function appendDiv(value, div, id, type, connected) {
     const element = document.createElement('a')
 
-    const elementDot =document.createElement('span')
-    elementDot.className="dot"
+    const elementDot = document.createElement('span')
+    elementDot.className = "dot"
     //elementDot.id ="dot"
 
     element.innerText = value
 
     element.setAttribute("id", id)
-    element.onclick = function( ){
+    element.onclick = function () {
         console.log(type, id)
-        location.href='conv.html?'+type+"="+id;
+        location.href = 'conv.html?' + type + "=" + id;
     }
+    if (type == "user") {
 
     var color = "#bbb"
-    if (connected) color= "#00ced1"
+    if (connected) color = "#00ced1"
 
     //console.log(color)
-    elementDot.style.backgroundColor= color
+    elementDot.style.backgroundColor = color
     element.appendChild(elementDot)
-
+}
 
     div.append(element)
 }

@@ -1,0 +1,91 @@
+<div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+        <h2>Reception</h2>
+        <video id="receiver-video" width="100%" height="400px"></video>
+                <p>
+                    <button id="start-visio">Démarrer la Visio</button>
+                </p>
+            </div>
+        <div class="col-sm-6">
+    <h2>Envoi</h2>
+    <video id="emitter-video" width="100%" height="400px"></video>
+        </div>
+
+
+        </div>
+
+    </div>
+	
+	
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+document.getElementById('start-visio').addEventListener('click',(e)=> {
+startConv(true)
+})
+
+function startConv(initiator) {
+    navigator.getUserMedia({
+        video :true,
+        audio : true
+    }, function (stream) {
+        let peer = new SimplePeer({
+            initiator:initiator,
+            stream : stream,
+            trickle: false
+        })
+        bindEvents(peer)
+
+        let emitterVid = document.getElementById('emitter-video')
+        emitterVid.volume=0.1
+        // !!! window.URL.createObjectURL désactivé sur Chrome
+        try {
+            emitterVid.srcObject = stream;
+        } catch (error) {
+            emitterVid.src = window.URL.createObjectURL(stream);
+        }
+        emitterVid.play()
+
+
+
+
+
+    }, function () {
+
+    })
+}
+
+
+
+function bindEvents(p) {
+
+    p.on('signal', data =>{
+console.log(data)
+    })
+
+p.on('stream', function (stream) {
+    let receiveVid = document.getElementById('receiver-video')
+    receiveVid.volume=0.1
+    // !!! window.URL.createObjectURL désactivé sur Chrome
+    try {
+        receiveVid.srcObject = stream;
+    } catch (error) {
+        receiveVid.src = window.URL.createObjectURL(stream);
+    }
+    receiveVid.play()
+})
+
+
+    document.getElementById('incomming').addEventListener('submit', function (e) {
+console.log("wait")
+    })
+
+}

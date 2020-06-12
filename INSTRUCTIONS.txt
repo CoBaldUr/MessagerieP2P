@@ -1,0 +1,1 @@
+Lancez le fichier server-{L'OS de votre choix}, puis ouvres le fichier html index

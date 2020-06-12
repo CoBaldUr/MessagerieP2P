@@ -32,7 +32,6 @@ let userId=userData.id
 
 
 
-loadConv()
 loadUser()
 console.log(users)
 
@@ -53,6 +52,8 @@ console.log("Name :", service.txt.name)
 
 else if (users[service.name]==undefined){
     users[service.name] ={ "name" :service.txt.name}
+        userData.usersMet =users
+    updateFile("userData.json", userData)
 }
 
     if (users[service.name]!= undefined){
@@ -71,6 +72,9 @@ browserUser.on('down', (service)=>{
 
     io.sockets.emit("user-Connect", { user :users[service.name], id :service.name})
 
+
+
+
 })
 
 
@@ -87,26 +91,7 @@ function serviceLocal() {
 }
 serviceLocal()
 
-var browserConv = bonjour.find({type: 'conv'})
 
-browserConv.on('up', (service)=>{
-
-
-
-
-    console.log('Found an HTTP server:', service)
-    servicesConv[service.name]=service
-    convUsed[service.name].connected=true
-
-})
-
-
-browserConv.on('down', (service)=>{
-    console.log("dwwwn", service)
-    delete servicesConv[service.name]
-    convUsed[service.name].connected=false
-
-})
 
 
 
@@ -114,25 +99,6 @@ browserConv.on('down', (service)=>{
 
 
 console.log("boot")
-
-// chargement des conversations connues
-function loadConv(){
-    for (var id in convUsed){
-        console.log("load", id+" "+convUsed[id])
-        if (servicesConv[id]==undefined){
-            //convUsed[id].connected = false
-            bonjour.publish({ name: id, type: 'conv', port: 3000 }).on('error', (error)=>{
-                console.log("erreur on", error)
-
-            })
-        }
-    else{
-            convUsed[id].connected = true
-        }
-    }
-
-        }
-
 
 
 function loadUser(){
@@ -186,26 +152,23 @@ io.on('connection', socket => {
         console.log(urlParams.get("user"))
         console.log("test", urlParams)
 
+        // gestion conversation entres utilisateurs
         if(urlParams.has("user")){
             let userIdConv = urlParams.get("user")
-            // on choisit qui héberge la conversation
-            // idLocal + idContact => si pair, serveur local heberge
-            let ipLocal =userLocal.referer.address+":"+userLocal.port
+            socket.emit("idConv",(parseInt(userIdConv, 10)+ parseInt(userId, 10)))
+            // si l'utilisateur n'est pas connecté alorsil n'a pas d'ip
            if (servicesUser[userIdConv]==undefined){
-               socket.emit("IPConv", ipLocal)
-           }
-            else{let number = (parseInt(userIdConv)+parseInt(userId))%2
-           if (number==0){
-                console.log( "ouiuiuiui" ,userLocal)
+               socket.emit("IPConv", "unknown")
+           }else{
 
-                socket.emit("IPConv", ipLocal)
-            }
-            else {
                let service = servicesUser[userIdConv]
                let ip = service.referer.address + ":" + service.port
                socket.emit("IPConv", ip)
            } }
-        }
+
+
+
+        // gestion conversation entres groupes
         else if(urlParams.has("conv")){
             let idConv = urlParams.get("conv")
             let service = servicesConv[idConv]
@@ -214,12 +177,71 @@ io.on('connection', socket => {
         }
 
 
+    })
 
 
+    socket.on('hello', data =>{
+        console.log(data)
+    })
+
+    socket.on('sendMessage', data=>{
+        data.sender = userId
+        console.log(data)
+        console.log(typeof (data.conv))
+        // si conversation à plusieurs
+        if (typeof(data.conv) == "string"){
+
+
+
+}
+// conversation à un seul utilisateur
+else{
+            sendToUser(data, getUserIdFromConv(data))
+}
+
+    })
+
+
+    socket.on('transferMessage', data=>{
+        console.log('receive',data)
+        socket.broadcast.emit("received", data)
 
     })
 
 })
+
+
+
+function sendToUser(data, userId) {
+
+    let ipServ
+    ipServ = getIpServer(userId)
+    console.log(userId+" "+ipServ)
+    if (ipServ=="unknown"){
+        console.log("Queue")
+
+    }
+    else {
+        let socketConv = require("socket.io-client")('http://'+ipServ)
+        socketConv.emit('transferMessage',data)
+
+
+    }
+
+}
+
+
+function getUserIdFromConv(data) {
+let idConv = data.conv
+
+    return (parseInt(idConv, 10)- parseInt(userId, 10))
+
+}
+
+
+
+
+
 
 
 function updateFile(nameFile, dataRaw){
@@ -239,4 +261,15 @@ function readFile(nameFile) {
     var data=fs.readFileSync(nameFile+'.json', 'utf8');
     return JSON.parse(data);
 
+}
+
+function getIpServer(userID) {
+
+    if(servicesUser[userID]==undefined){
+        return "unknown"
+    }
+else{
+        return servicesUser[userID].referer.address+":"+servicesUser[userID].port
+
+    }
 }
