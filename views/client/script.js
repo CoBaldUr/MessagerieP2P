@@ -53,7 +53,7 @@ socket.on('servicesMulti-connected', data => {
 
 
 function appendMessage(message) {
-    const messageElement = document.createElement('div')
+    const messageElement = document.createElement('p')
     messageElement.innerText = message
     messageContainer.append(messageElement)
 }

@@ -10,27 +10,46 @@ const messageForm = document.getElementById('send-container')
 
 
 
-socket.emit("ask-convIp", queryString)
-let ipConv
-socket.on("IPConv", ipConvR =>{
-    ipConv=ipConvR
-    console.log("service",ipConv)
-    startConv()
+socket.emit("ask-convId", queryString)
 
-
-})
 
 let idConv =""
+let type =""
+
 socket.on("idConv", id=>{
     idConv=id
+
+    socket.on("type", typ=>{
+        type=typ
+        startConv()
+    })
+
 })
+
+
 
 
 
 function startConv() {
+    console.log("Type", type)
+if (type=="conv"){
+    socket.emit('ask-messagesConv', idConv)
+}
+if (type=="private") {
+        socket.emit('ask-messagesPrivate', idConv)
+    }
+
+
 
 appendForm()
 
+    socket.on("messagesConv", messages =>{
+        console.log("messages", messages)
+        appendConv(messages)
+
+
+
+    })
 
 
 }
@@ -66,7 +85,18 @@ function appendForm() {
 
 
     socket.on("received", data=>{
+        if (data.conv==idConv){
         console.log(data)
+        appendMessage(data)
+        }
+        else{
+            console.log("notif", data.conv)
+
+        }
+    })
+
+    socket.on("sentMessage", data=>{
+        appendMessage(data)
     })
 
 }
@@ -77,5 +107,32 @@ let messageData = {conv : idConv, msg :message, date: Date.now()}
     console.log("message", messageData)
 
 
+
+}
+
+
+function appendMessage(dataMessage) {
+
+        const messageElement = document.createElement('p')
+        messageElement.id= dataMessage.date
+    messageElement.title= new Date(dataMessage.date)
+        messageElement.innerText = dataMessage.msg
+    console.log("color", usrId)
+    if(dataMessage.sender==usrId){
+
+        messageElement.style.backgroundColor = "#00c4fe"
+    }
+
+
+
+        messageContainer.append(messageElement)
+
+}
+
+
+function appendConv(messages) {
+    for (let id in messages){
+        appendMessage(messages[id])
+    }
 
 }

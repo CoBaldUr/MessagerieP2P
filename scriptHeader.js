@@ -2,7 +2,7 @@
 const socket = io('http://localhost:3000')
 const sideBar = document.getElementById("sidenav")
 
-
+let userNames
 
 
 function openNav() {
@@ -20,9 +20,16 @@ closeNav()
 
 socket.emit('ask-name')
 
+let usrName
+let usrId
 
 socket.on('user-name', userName => {
     console.log("test",userName)
+    socket.on("user-id", id=>{
+        usrId=id
+    })
+
+
     if (userName==""){
 
 
@@ -37,6 +44,7 @@ socket.on('user-name', userName => {
 
     else{
 
+usrName=userName
 
         usersInit()
 
@@ -64,6 +72,7 @@ function usersInit() {
 
 
     socket.on("users", users =>{
+        userNames=users
         for(var id in users){
             //console.log("user", id)
             appendDiv(users[id].name, divUser, id, "user", users[id].connected)
@@ -86,6 +95,19 @@ function convInit(){
 let divConv = document.createElement('div')
 divConv.setAttribute('id',"conv-container")
 divConv.innerText="Conversation"
+
+    divAddConv = document.createElement('input')
+    divAddConv.type ="button"
+    divAddConv.name ="Ajouter une conversation"
+    divAddConv.value ="+"
+    divAddConv.style.float ="right"
+    divAddConv.style.borderRadius="15px"
+    divAddConv.onclick= function(){
+    addConv()
+    }
+
+
+    divConv.appendChild(divAddConv)
 sideBar.append(divConv)
 
     socket.on("convs", convs =>{
@@ -174,7 +196,12 @@ function displayRegister(){
     });
 
 
+}
 
+
+function addConv() {
 
 
 }
+
+
