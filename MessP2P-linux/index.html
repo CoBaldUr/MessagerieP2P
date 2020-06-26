@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>Test Node</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="scriptHeader.js"></script>
+</head>
+<body>
+<div class="sidenav" id="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="accueil" style="cursor:pointer" onclick="location.href='index.html'">Accueil</div>
+</div>
+<span style="font-size:30px; cursor:pointer" onclick="openNav()"  id ="openbtn">&#9776;</span>
+
+
+
+
+<div class="main">
+
+
+    <div class="login">
+        <div class="login-form">
+            <label for="uname"><b>Nom : </b></label>
+            <input id="logForm" type="text" placeholder="Entrez votre nom" name="uname" required>
+
+            <span class="logButt">Login</span>
+
+
+        </div>
+    </div>
+
+    <h1>Bienvenue ! </h1>
+    <p>Selectionnez une conversation</p>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
