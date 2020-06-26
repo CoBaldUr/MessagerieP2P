@@ -1,1 +1,1 @@
-Lancez le fichier server-{L'OS de votre choix}, puis ouvres le fichier html index
+Lancer le fichier server-{L'OS de votre choix}, puis ouvrir le fichier html conv
